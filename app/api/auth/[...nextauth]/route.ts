@@ -1,6 +1,5 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
-import InstagramProvider from 'next-auth/providers/instagram'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import prisma from '@/prisma/client'
 
@@ -12,10 +11,6 @@ export const authOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
-    InstagramProvider({
-      clientId: process.env.INSTAGRAM_CLIENT_ID,
-      clientSecret: process.env.INSTAGRAM_CLIENT_SECRET
-    })
   ],
 } as NextAuthOptions
 
