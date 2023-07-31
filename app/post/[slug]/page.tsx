@@ -46,11 +46,13 @@ export default function PostPage({ params }: Props) {
           {data.comments?.length === 0 ? (
             <p className="text-center mt-24">No comments yet</p>
           ) : (
-            <h2 className="text-lg font-bold mt-8 mb-4">Comments</h2>
+            <h2 className="text-lg font-bold mt-8">Comments</h2>
           )}
           {data.comments?.map((comment) => (
-            <div key={comment.id} className="my-6 bg-white dark:bg-gray-700 p-8 rounded-md">
-              <div className="flex items-center gap-2">
+            <div
+              key={comment.id}
+              className="mt-3 mb-6 bg-white dark:bg-gray-700 p-6 md:p-8 rounded-md">
+              <div className="flex items-center gap-4 md:gap-2">
                 <Image
                   width={24}
                   height={24}
@@ -58,10 +60,12 @@ export default function PostPage({ params }: Props) {
                   alt={comment.user.name || 'avatar'}
                   className="rounded-full"
                 />
-                <h3 className="font-bold">{comment.user.name}</h3>
-                <h2 className="text-sm">
-                  {new Date(comment.createdAt as string).toLocaleString()}
-                </h2>
+                <div className="md:contents">
+                  <h3 className="font-bold">{comment.user.name}</h3>
+                  <h2 className="text-sm ml-0 md:ml-4">
+                    {new Date(comment.createdAt as string).toLocaleString()}
+                  </h2>
+                </div>
               </div>
               <div className="py-4">{comment.text}</div>
             </div>

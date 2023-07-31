@@ -15,7 +15,7 @@ type PostProps = {
 
 export default function Post({ avatar, name, postTitle, id, comments, onDeleteClick }: PostProps) {
   return (
-    <div className="bg-white my-8 p-8 rounded-lg dark:bg-gray-700">
+    <div className="bg-white my-8 p-6 md:p-8  rounded-lg dark:bg-gray-700">
       <div className="flex items-center gap-2">
         <Image className="rounded-full" width={32} height={32} src={avatar} alt="avatar" />
         <h3 className="font-bold">{name}</h3>
@@ -23,7 +23,7 @@ export default function Post({ avatar, name, postTitle, id, comments, onDeleteCl
       <div className="my-8">
         <p className="break-all">{postTitle}</p>
       </div>
-      <div className="flex gap-4 cursor-pointer items-center">
+      <div className="flex gap-4 items-center">
         <Link href={`/post/${id}`}>
           <span className="text-sm font-bold">Comments</span>
           <span className="bg-gray-200 dark:bg-gray-500 py-1 px-1.5 font-medium rounded-md text-xs ml-1.5">

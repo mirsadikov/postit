@@ -30,7 +30,7 @@ export default function Toggle({ deletePost, close }: ToggleProps) {
         onClick={(e) => {
           e.stopPropagation()
         }}
-        className="absolute bg-white dark:bg-gray-700 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-12 rounded-lg flex flex-col gap-6">
+        className="absolute bg-white dark:bg-gray-700 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-8 md:p-12 rounded-lg flex flex-col gap-6 w-max max-w-[90%]">
         <h2 className="text-xl">Are you sure you want to delete this post?</h2>
         <h3 className="text-red-600 text-sm">
           Pressing the delete button will permanently delete this post

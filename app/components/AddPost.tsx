@@ -31,13 +31,15 @@ export default function AddPost() {
   }
 
   return (
-    <form onSubmit={submitPost} className="bg-white dark:bg-gray-700 my-8 p-8 rounded-md">
-      <div className="flex flex-col my-4">
+    <form
+      onSubmit={submitPost}
+      className="bg-white dark:bg-gray-700 my-8 px-6 py-8 md:p-8 rounded-md">
+      <div className="flex flex-col my-4 mt-0 md:mt-4">
         <textarea
           onChange={(e) => setTitle(e.target.value)}
           name="title"
           placeholder="What's on your mind?"
-          className="p-4 text-lg rounded-md my-2 bg-gray-200 dark:bg-gray-600"
+          className="p-4  text-lg rounded-md my-2 bg-gray-200 dark:bg-gray-600"
           value={title}></textarea>
       </div>
       <div className="flex items-center justify-between gap-2">
