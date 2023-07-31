@@ -1,38 +1,15 @@
-'use client'
-import axios from 'axios'
+import { getServerSession } from 'next-auth'
 import AddPost from './components/AddPost'
-import { useQuery } from '@tanstack/react-query'
-import Post from './components/Post'
-import { PostType } from './types/Posts'
+import Posts from './components/Posts'
+import { authOptions } from './api/auth/[...nextauth]/route'
 
-// Fetch all posts
-const allPosts = async () => {
-  const response = await axios.get('/api/posts')
-  return response.data
-}
-
-export default function Home() {
-  const { data, error, isLoading } = useQuery<PostType[]>({
-    queryFn: allPosts,
-    queryKey: ['posts'],
-  })
+export default async function Home() {
+  const session = await getServerSession({ ...authOptions })
 
   return (
     <main>
-      <AddPost />
-      {data?.map((post) => (
-        <Post
-          comments={post.comments}
-          key={post.id}
-          name={post.user.name}
-          avatar={post.user.image}
-          postTitle={post.title}
-          id={post.id}
-        />
-      ))}
-
-      {error instanceof Error && <p>{error?.message}</p>}
-      {isLoading && <p>Loading...</p>}
+      {session ? <AddPost /> : <p className="text-center">Sign in to create a post</p>}
+      <Posts />
     </main>
   )
 }

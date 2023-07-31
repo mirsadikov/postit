@@ -10,9 +10,5 @@ interface Props {
 const queryClient = new QueryClient()
 
 export default function QueryWrapper({ children }: Props) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
