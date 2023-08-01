@@ -9,7 +9,7 @@ import Image from 'next/image'
 
 type Props = {
   params: {
-    slug: string
+    postId: string
   }
 }
 
@@ -19,16 +19,18 @@ type SinglePostType = Omit<PostType, 'comments'> & {
   })[]
 }
 
-const fetchDetails = async (slug: string) => {
-  const response = await axios.get(`/api/posts/${slug}`)
+const fetchDetails = async (postId: string) => {
+  const response = await axios.get(`/api/posts/${postId}`)
   return response.data
 }
 
 export default function PostPage({ params }: Props) {
   const { data, isLoading } = useQuery<SinglePostType>({
-    queryFn: () => fetchDetails(params.slug),
-    queryKey: ['detail-post'],
+    queryFn: () => fetchDetails(params.postId),
+    queryKey: [`post-${params.postId}`],
   })
+
+  console.log(isLoading)
 
   return (
     <div>
