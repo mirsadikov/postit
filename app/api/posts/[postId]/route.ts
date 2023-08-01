@@ -15,7 +15,7 @@ export async function DELETE(req: NextRequest, { params }: Context) {
     ...authOptions,
   })
 
-  if (!session) {
+  if (!session || !session.user || !session.user.email) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
@@ -23,7 +23,7 @@ export async function DELETE(req: NextRequest, { params }: Context) {
     const { postId } = params
 
     const result = await prisma.post.delete({
-      where: { id: postId },
+      where: { id: postId, user: { email: session.user.email } },
     })
 
     return NextResponse.json(result)
@@ -54,5 +54,32 @@ export async function GET(req: NextRequest, { params }: Context) {
     return NextResponse.json(post)
   } catch (error) {
     return NextResponse.json({ message: 'Error has occured while fetching post' }, { status: 403 })
+  }
+}
+
+export async function PUT(req: NextRequest, { params }: Context) {
+  const session = await getServerSession({
+    req,
+    ...authOptions,
+  })
+
+  if (!session || !session.user || !session.user.email) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+  }
+
+  try {
+    const { postId } = params
+    const body = await req.json()
+
+    const result = await prisma.post.update({
+      where: { id: postId, user: { email: session.user.email } },
+      data: {
+        title: body.title,
+      },
+    })
+
+    return NextResponse.json(result)
+  } catch (error) {
+    return NextResponse.json({ message: 'Error has occured while updating post' }, { status: 403 })
   }
 }

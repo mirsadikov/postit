@@ -15,7 +15,8 @@ const fetchAuthPosts = async () => {
 
 export default function MyPosts() {
   const [toggle, setToggle] = useState(false)
-  const [currentID, setCurrentID] = useState('')
+  const [toastDeleteID, setToastDeleteID] = useState('')
+  const [toastEditID, setToastEditID] = useState('')
 
   const queryClient = useQueryClient()
 
@@ -24,26 +25,49 @@ export default function MyPosts() {
     queryKey: ['auth-posts'],
   })
 
-  const { mutate } = useMutation({
+  const { mutate: deleteMutation, isLoading: isDeleting } = useMutation({
     mutationFn: async (id: string) => await axios.delete(`/api/posts/${id}`),
     onError: (error) => {
       error instanceof AxiosError &&
-        toast.error(error?.response?.data.message || 'Something went wrong', { id: currentID })
+        toast.error(error?.response?.data.message || 'Something went wrong', { id: toastDeleteID })
     },
     onSuccess: () => {
-      toast.success('Post deleted successfully', { id: currentID })
+      toast.success('Post deleted successfully', { id: toastDeleteID })
+      queryClient.invalidateQueries(['auth-posts'])
+    },
+  })
+
+  const {
+    mutate: editMutation,
+    isLoading: isUpdating,
+    isSuccess: isUpdated,
+  } = useMutation({
+    mutationFn: async ({ id, title }: { id: string; title: string }) =>
+      await axios.put(`/api/posts/${id}`, { title: title }),
+    onError: (error) => {
+      error instanceof AxiosError &&
+        toast.error(error?.response?.data.message || 'Something went wrong', { id: toastEditID })
+    },
+    onSuccess: () => {
+      toast.success('Post edited successfully', { id: toastEditID })
       queryClient.invalidateQueries(['auth-posts'])
     },
   })
 
   const deletePost = async () => {
-    mutate(currentID)
+    deleteMutation(toastDeleteID)
     setToggle(false)
   }
 
   const onDeleteClick = (id: string) => {
     setToggle(true)
-    setCurrentID(id)
+    setToastDeleteID(id)
+  }
+
+  const onEdit = ({ id, title }: { id: string; title: string }) => {
+    setToastEditID(id)
+    toast.loading('Updating post...', { id })
+    editMutation({ id, title })
   }
 
   return (
@@ -58,7 +82,11 @@ export default function MyPosts() {
           name={data.name}
           postTitle={post.title}
           comments={post.comments}
-          onDeleteClick={() => onDeleteClick(post.id)}
+          onDeleteClick={onDeleteClick}
+          isDeleting={isDeleting}
+          onEdit={onEdit}
+          isUpdating={isUpdating}
+          isUpdated={isUpdated}
         />
       ))}
       {toggle && <Toggle deletePost={deletePost} close={() => setToggle(false)} />}
