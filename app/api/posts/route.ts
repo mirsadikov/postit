@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Please sign in to make a post' }, { status: 401 })
 
   const body = await req.json()
-  const title: string = body.title
+  const title: string = body.title?.trim()
 
   const prismaUser = await prisma.user.findUnique({
     where: { email: session.user.email },

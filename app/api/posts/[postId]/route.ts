@@ -82,7 +82,7 @@ export async function PUT(req: NextRequest, { params }: Context) {
   try {
     const { postId } = params
     const body = await req.json()
-    const title: string = body.title
+    const title: string = body.title?.trim()
 
     if (!title) return NextResponse.json({ message: 'Title cannot be empty' }, { status: 403 })
 

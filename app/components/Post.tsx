@@ -45,7 +45,10 @@ export default function Post({
     setEditingActive(true)
     setTimeout(() => {
       inputRef.current?.focus()
-      inputRef.current?.setSelectionRange(inputRef.current.value.length, inputRef.current.value.length)
+      inputRef.current?.setSelectionRange(
+        inputRef.current.value.length,
+        inputRef.current.value.length
+      )
     })
   }
 
@@ -76,7 +79,7 @@ export default function Post({
             onChange={(e) => setNewPost(e.target.value)}
           />
         ) : (
-          <p className="break-words">{postTitle}</p>
+          <p className="break-words whitespace-break-spaces">{postTitle}</p>
         )}
       </div>
       <div className="flex gap-4 items-center">
