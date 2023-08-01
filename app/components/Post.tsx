@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { CommentType } from '../types/Posts'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type PostProps = {
   id: string
@@ -32,7 +32,7 @@ export default function Post({
 }: PostProps) {
   const [newPost, setNewPost] = useState(postTitle)
   const [editingActive, setEditingActive] = useState(false)
-
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const isMutating = isDeleting || isUpdating
 
   useEffect(() => {
@@ -43,10 +43,19 @@ export default function Post({
 
   const onEditClick = () => {
     setEditingActive(true)
+    setTimeout(() => {
+      inputRef.current?.focus()
+      inputRef.current?.setSelectionRange(inputRef.current.value.length, inputRef.current.value.length)
+    })
   }
 
   const onEditSubmit = () => {
     onEdit!({ id, title: newPost })
+  }
+
+  const onCancel = () => {
+    setNewPost(postTitle)
+    setEditingActive(false)
   }
 
   return (
@@ -55,15 +64,19 @@ export default function Post({
         <Image className="rounded-full" width={32} height={32} src={avatar} alt="avatar" />
         <h3 className="font-bold">{name}</h3>
       </div>
-      <div className="my-8">
+      <div
+        className={`my-8 border-2 rounded-md ${
+          editingActive ? 'border-gray-200 dark:border-gray-500' : 'border-transparent'
+        }`}>
         {editingActive ? (
           <textarea
-            className="w-full p-2 rounded-md resize-none outline-none"
+            ref={inputRef}
+            className="block w-full resize-none outline-none bg-transparent h-24"
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
           />
         ) : (
-          <p className="break-all">{postTitle}</p>
+          <p className="break-words">{postTitle}</p>
         )}
       </div>
       <div className="flex gap-4 items-center">
@@ -90,12 +103,18 @@ export default function Post({
               {editingActive ? 'Submit' : 'Edit'}
             </button>
             {editingActive && (
-              <button
-                disabled={isMutating}
-                onClick={() => setEditingActive(false)}
-                className="text-sm font-bold disabled:opacity-25">
-                Cancel
-              </button>
+              <>
+                <button
+                  disabled={isMutating}
+                  onClick={onCancel}
+                  className="text-sm font-bold disabled:opacity-25">
+                  Cancel
+                </button>
+                <p
+                  className={`font-bold text-sm flex-1 text-right ${
+                    newPost.length > 300 ? ' text-red-700 dark:text-red-500' : ''
+                  }`}>{`${newPost.length}/300`}</p>
+              </>
             )}
           </>
         )}

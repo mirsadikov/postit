@@ -19,11 +19,17 @@ export async function DELETE(req: NextRequest, { params }: Context) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
+  const prismaUser = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+
+  if (!prismaUser) return NextResponse.json({ message: 'User not found' }, { status: 403 })
+
   try {
     const { postId } = params
 
     const result = await prisma.post.delete({
-      where: { id: postId, user: { email: session.user.email } },
+      where: { id: postId, userId: prismaUser.id },
     })
 
     return NextResponse.json(result)
@@ -67,14 +73,26 @@ export async function PUT(req: NextRequest, { params }: Context) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
+  const prismaUser = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+
+  if (!prismaUser) return NextResponse.json({ message: 'User not found' }, { status: 403 })
+
   try {
     const { postId } = params
     const body = await req.json()
+    const title: string = body.title
+
+    if (!title) return NextResponse.json({ message: 'Title cannot be empty' }, { status: 403 })
+
+    if (title.length > 300)
+      return NextResponse.json({ message: 'Please write a shorter post' }, { status: 403 })
 
     const result = await prisma.post.update({
-      where: { id: postId, user: { email: session.user.email } },
+      where: { id: postId, userId: prismaUser.id },
       data: {
-        title: body.title,
+        title,
       },
     })
 
