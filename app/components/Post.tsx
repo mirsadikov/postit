@@ -68,7 +68,7 @@ export default function Post({
         <h3 className="font-bold">{name}</h3>
       </div>
       <div
-        className={`my-8 border-2 rounded-md ${
+        className={`mt-8 border-2 rounded-md ${
           editingActive ? 'border-gray-200 dark:border-gray-500' : 'border-transparent'
         }`}>
         {editingActive ? (
@@ -82,8 +82,14 @@ export default function Post({
           <p className="break-words whitespace-break-spaces">{postTitle}</p>
         )}
       </div>
-      <div className="flex gap-4 items-center">
-        <Link href={`/post/${id}`}>
+      {onEdit && editingActive && (
+        <p
+          className={`font-bold text-sm text-right mt-1 ${
+            newPost.length > 300 ? ' text-red-700 dark:text-red-500' : ''
+          }`}>{`${newPost.length}/300`}</p>
+      )}
+      <div className="flex gap-4 items-center mt-8">
+        <Link href={`/post/${id}`} className="flex-1">
           <span className="text-sm font-bold">Comments</span>
           <span className="bg-gray-200 dark:bg-gray-500 py-1 px-1.5 font-medium rounded-md text-xs ml-1.5">
             {comments.length}
@@ -106,18 +112,12 @@ export default function Post({
               {editingActive ? 'Submit' : 'Edit'}
             </button>
             {editingActive && (
-              <>
-                <button
-                  disabled={isMutating}
-                  onClick={onCancel}
-                  className="text-sm font-bold disabled:opacity-25">
-                  Cancel
-                </button>
-                <p
-                  className={`font-bold text-sm flex-1 text-right ${
-                    newPost.length > 300 ? ' text-red-700 dark:text-red-500' : ''
-                  }`}>{`${newPost.length}/300`}</p>
-              </>
+              <button
+                disabled={isMutating}
+                onClick={onCancel}
+                className="text-sm font-bold disabled:opacity-25">
+                Cancel
+              </button>
             )}
           </>
         )}
